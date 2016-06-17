@@ -3,11 +3,9 @@ import ReactDOM from 'react-dom';
 import { createStore} from 'redux'
 import { Provider, connect } from 'react-redux'
 
-
 //store
 
 let store = createStore(todo)
-
 
 //actions
 const ADD_TODO = 'ADD_TODO'
@@ -19,23 +17,9 @@ function addTodo(text) {
     id: x++,
     text: text
   }
-
 }
 
 //reducer
-
-// function todo(state={id:0,text:"",completed:false}, action) {
-//   switch (action.type) {
-//     case ADD_TODO:
-//       return Object.assign({},state,{
-//         id: action.id,
-//         text: action.text,
-//         completed: false
-//       })
-//     default:
-//       return state
-//   }
-// }
 
 function todo(state = [], action) {
   switch (action.type) {
@@ -60,11 +44,13 @@ class App extends Component {
     store.dispatch(addTodo(text))
   }
   render() {
+     console.log("App Component")
+     console.log(this.props)
     return (
       <div>
       <h1>Hello, world.</h1>
       <TodoForm onHandleSubmit={this.onHandleSubmit}/>
-      <TodoList/>
+      <TodoList todos={this.props.todos}/>
       </div>
     );
   }
@@ -72,23 +58,9 @@ class App extends Component {
 
 function mapStateToProps(state, ownProps){
 	console.log("mapStateToProps")
-	console.log(state)
-
-  // return Object.assign({}, state, {
-  //       tds: [
-  //         ...state.todos,
-  //         {
-  //         text: state.text,
-  //         id : state.id,
-  //         completed : false
-  //         }
-  //       ]
-  //     })
-
+	
 	return {
-		text: state.text,
-		id : state.id,
-		completed : false
+		todos:state
 	}
 }
 
@@ -97,14 +69,13 @@ const ConnectedApp = connect(mapStateToProps)(App);
 //component Form
 
 class TodoForm extends Component {
-          constructor(props){
-            super(props)
+            constructor(props){
+              super(props)
             }
-
             render() {
               let input
                     return (
-						<div>
+						    <div>
 						      <form onSubmit={e => {
 						        e.preventDefault()
 						        if (!input.value.trim()) {
@@ -129,11 +100,12 @@ class TodoForm extends Component {
 class TodoList extends Component {
             constructor(props){
               super(props)
-             
             }
             render() {
+               console.log('Todolist')
+               
                 return (
-                  <ul><TodoListItem /></ul>
+                  <ul><TodoListItem todos={this.props.todos} /></ul>
                   );
                 }
 }
@@ -142,16 +114,10 @@ class TodoList extends Component {
 class TodoListItem extends Component {
             constructor(props){
               super(props)
-              this.handleDelete = this.handleDelete.bind(this)
-            }
-              handleDelete(e){
-              e.preventDefault()
-              console.log(e.value)
-              //this.props.dispatch(addTodo(e.value));
             }
             render(){
               return (
-                <li>{this.props.text}<button id={this.props.id} onClick={this.handleDelete}/></li>
+                <li>{this.props.todos.map(function(todo){return todo.text+", "})}</li>
               );
             }
 }
