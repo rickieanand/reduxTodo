@@ -16,7 +16,7 @@ function addTodo(text) {
 
   return {
     type: ADD_TODO,
-    id: ++x,
+    id: x++,
     text: text
   }
 
@@ -24,42 +24,42 @@ function addTodo(text) {
 
 //reducer
 
-function todo(state={id:0,text:"",completed:false}, action) {
-     console.log("reducer Called")
-     console.log(action)
+// function todo(state={id:0,text:"",completed:false}, action) {
+//   switch (action.type) {
+//     case ADD_TODO:
+//       return Object.assign({},state,{
+//         id: action.id,
+//         text: action.text,
+//         completed: false
+//       })
+//     default:
+//       return state
+//   }
+// }
 
+function todo(state = [], action) {
   switch (action.type) {
-    case 'ADD_TODO':
-      
-      console.log(Object.assign({},state,{
-        id: action.id,
-        text: action.text,
-        completed: false
-      }) !== state)
-
-      return Object.assign({},state,{
-        id: action.id,
-        text: action.text,
-        completed: false
-      })
+    case ADD_TODO:
+      return [
+        ...state,
+        {
+          id: action.id,
+          text: action.text,
+          completed: false
+        }
+      ]
     default:
       return state
   }
 }
 
-
-
-
 //component App
 
 class App extends Component {
   onHandleSubmit(text){
-    console.log('OnHandleSubmit Called')
     store.dispatch(addTodo(text))
-    store.
   }
   render() {
-  	console.log(this.props)
     return (
       <div>
       <h1>Hello, world.</h1>
@@ -73,7 +73,18 @@ class App extends Component {
 function mapStateToProps(state, ownProps){
 	console.log("mapStateToProps")
 	console.log(state)
-	console.log(ownProps)
+
+  // return Object.assign({}, state, {
+  //       tds: [
+  //         ...state.todos,
+  //         {
+  //         text: state.text,
+  //         id : state.id,
+  //         completed : false
+  //         }
+  //       ]
+  //     })
+
 	return {
 		text: state.text,
 		id : state.id,
@@ -83,19 +94,13 @@ function mapStateToProps(state, ownProps){
 
 //connect(mapStateToProps)(App)
 const ConnectedApp = connect(mapStateToProps)(App);
-
 //component Form
 
 class TodoForm extends Component {
           constructor(props){
             super(props)
-//            this.handleAdd = this.handleAdd.bind(this)
             }
-            // handleAdd(e){
-            // e.preventDefault()
-            // console.log(e.target)
-            // //dispatch(addTodo(e.value))
-            // }
+
             render() {
               let input
                     return (
@@ -105,10 +110,8 @@ class TodoForm extends Component {
 						        if (!input.value.trim()) {
 						          return
 						        }
-						        console.log(input.value)
 						        this.props.onHandleSubmit(input.value)
-                    //store.dispatch(addTodo(input.value))
-						        //input.value = ''
+						        input.value = ''
 						      }}>
 						        <input ref={node => {
 						          input = node
@@ -157,4 +160,6 @@ class TodoListItem extends Component {
 
 
 
+//ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 ReactDOM.render(<Provider store={store}><ConnectedApp /></Provider>, document.getElementById('root'));
+
