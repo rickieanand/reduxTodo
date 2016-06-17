@@ -8,14 +8,12 @@ import { Provider, connect } from 'react-redux'
 
 let store = createStore(todo)
 
-console.log(store.getState())
 
 //actions
 const ADD_TODO = 'ADD_TODO'
   let x=1
 function addTodo(text) {
 
-  console.log("Action Called")
   return {
     type: ADD_TODO,
     id: ++x,
@@ -27,17 +25,23 @@ function addTodo(text) {
 //reducer
 
 function todo(state={id:0,text:"",completed:false}, action) {
-	  console.log(action)
-   
+     console.log("reducer Called")
+     console.log(action)
+
   switch (action.type) {
     case 'ADD_TODO':
-    
-    let newState =  Object.assign({},state,{
+      
+      console.log(Object.assign({},state,{
+        id: action.id,
+        text: action.text,
+        completed: false
+      }) !== state)
+
+      return Object.assign({},state,{
         id: action.id,
         text: action.text,
         completed: false
       })
-      return newState
     default:
       return state
   }
@@ -49,17 +53,23 @@ function todo(state={id:0,text:"",completed:false}, action) {
 //component App
 
 class App extends Component {
+  onHandleSubmit(text){
+    console.log('OnHandleSubmit Called')
+    store.dispatch(addTodo(text))
+    store.
+  }
   render() {
   	console.log(this.props)
     return (
       <div>
       <h1>Hello, world.</h1>
-      <TodoForm />
+      <TodoForm onHandleSubmit={this.onHandleSubmit}/>
       <TodoList/>
       </div>
     );
   }
 }
+
 function mapStateToProps(state, ownProps){
 	console.log("mapStateToProps")
 	console.log(state)
@@ -71,7 +81,7 @@ function mapStateToProps(state, ownProps){
 	}
 }
 
-connect(mapStateToProps)(<App/>)
+connect(mapStateToProps)(App)
 
 //component Form
 
@@ -87,7 +97,6 @@ class TodoForm extends Component {
             // }
             render() {
               let input
-              	console.log(this.props)
                     return (
 						<div>
 						      <form onSubmit={e => {
@@ -96,8 +105,9 @@ class TodoForm extends Component {
 						          return
 						        }
 						        console.log(input.value)
-						        store.dispatch(addTodo(input.value))
-						        input.value = ''
+						        this.props.onHandleSubmit(input.value)
+                    //store.dispatch(addTodo(input.value))
+						        //input.value = ''
 						      }}>
 						        <input ref={node => {
 						          input = node
@@ -123,6 +133,7 @@ class TodoList extends Component {
                   );
                 }
 }
+
 //component TodoListItem
 class TodoListItem extends Component {
             constructor(props){
@@ -135,7 +146,6 @@ class TodoListItem extends Component {
               //this.props.dispatch(addTodo(e.value));
             }
             render(){
-            	console.log(this.props)
               return (
                 <li>{this.props.text}<button id={this.props.id} onClick={this.handleDelete}/></li>
               );
