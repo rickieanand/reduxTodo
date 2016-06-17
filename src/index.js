@@ -81,7 +81,8 @@ function mapStateToProps(state, ownProps){
 	}
 }
 
-connect(mapStateToProps)(App)
+//connect(mapStateToProps)(App)
+const ConnectedApp = connect(mapStateToProps)(App);
 
 //component Form
 
@@ -156,4 +157,4 @@ class TodoListItem extends Component {
 
 
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><ConnectedApp /></Provider>, document.getElementById('root'));
