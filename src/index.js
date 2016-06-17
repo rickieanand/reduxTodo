@@ -58,7 +58,6 @@ class App extends Component {
 
 function mapStateToProps(state, ownProps){
 	console.log("mapStateToProps")
-	
 	return {
 		todos:state
 	}
@@ -78,7 +77,7 @@ class TodoForm extends Component {
 						    <div>
 						      <form onSubmit={e => {
 						        e.preventDefault()
-						        if (!input.value.trim()) {
+						        if (!input.value.trim()){
 						          return
 						        }
 						        this.props.onHandleSubmit(input.value)
